@@ -5,7 +5,7 @@
   "description": "Auvizra — AI Visual Study Companion",
   "type": "module",
   "scripts": {
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build && node -e \"import('fs').then(fs => fs.cpSync('client/dist', 'public', {recursive: true}))\"",
     "dev:server": "node server/server.js",
     "dev:client": "cd client && npm run dev",
     "start": "node server/server.js"
