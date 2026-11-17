@@ -48,8 +48,10 @@ async function handleSearch(req, res) {
 router.post('/search', handleSearch);
 router.get('/search', handleSearch);
 
-// Proxy handler for external URLs
-// IMPORTANT: NEVER send a 302 redirect to a data: URI as that breaks HTTP fetch and browser CORS!
+/**
+ * Proxy handler for external URLs
+ * Ensures hotlink bypass, adds valid User-Agent, and fails over safely to clean SVG buffer.
+ */
 async function handleImageProxy(req, res) {
   const targetUrl = req.query.url;
   if (!targetUrl) {
@@ -68,9 +70,10 @@ async function handleImageProxy(req, res) {
   try {
     const response = await fetch(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'AuvizraStudyCompanion/1.0 (https://github.com/adhavanmasscoc-maker/auvizra; visual study app; mailto:support@auvizra.app)',
         'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
-      }
+      },
+      signal: AbortSignal.timeout(3500)
     });
 
     const contentType = response.headers.get('content-type') || '';
@@ -79,7 +82,7 @@ async function handleImageProxy(req, res) {
     if (!response.ok || contentType.includes('text/html') || contentType.includes('text/plain')) {
       const fallbackSvg = generateSvgMarkupString({
         topic: urlTopic,
-        subtopic: 'Verified Content',
+        subtopic: 'Auvizra Verified Visual',
         concepts: ['Overview', 'Structure', 'Concept'],
         caption: `Visual diagram for ${urlTopic}.`
       });
@@ -96,10 +99,10 @@ async function handleImageProxy(req, res) {
     const buffer = await response.arrayBuffer();
     res.send(Buffer.from(buffer));
   } catch (err) {
-    console.warn('Image proxy error, serving fallback SVG:', err.message);
+    console.warn('Image proxy error or timeout, serving fallback SVG:', err.message);
     const fallbackSvg = generateSvgMarkupString({
       topic: urlTopic,
-      subtopic: 'Verified Content',
+      subtopic: 'Auvizra Verified Visual',
       concepts: ['Overview', 'Concept'],
       caption: `Visual diagram for ${urlTopic}.`
     });

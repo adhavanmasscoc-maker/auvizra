@@ -58,5 +58,5 @@ app.get('*', (req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Vizora Backend running on http://localhost:${PORT}`);
+  console.log(`🚀 Auvizra Backend running on http://localhost:${PORT}`);
 });
