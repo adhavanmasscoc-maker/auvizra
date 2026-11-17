@@ -14,6 +14,7 @@ import {
   Award
 } from 'lucide-react';
 import ImageCard from './ImageCard';
+import SafeSlideImage from './SafeSlideImage';
 import { generateClientFallbackSVG } from '../services/diagramFallback';
 
 export default function Slideshow({
@@ -216,21 +217,23 @@ export default function Slideshow({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.02 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative max-h-[460px] max-w-full w-full flex flex-col items-center justify-center"
+                className="relative max-h-[460px] min-h-[360px] sm:min-h-[410px] max-w-full w-full flex flex-col items-center justify-center"
               >
-                <div className={`p-3 sm:p-5 rounded-2xl transition-all duration-300 flex items-center justify-center max-w-full ${
+                <div className={`p-2 sm:p-4 rounded-2xl transition-all duration-300 flex items-center justify-center max-w-full w-full h-full ${
                   shouldRenderLight
                     ? 'bg-white shadow-2xl ring-1 ring-slate-200/60'
                     : canvasBg === 'blueprint'
                     ? 'bg-[#08182b] border border-cyan-800/60 shadow-2xl'
                     : 'bg-transparent'
                 }`}>
-                  <img
+                  <SafeSlideImage
                     src={currentImage.thumbUrl || currentImage.url}
                     alt={currentImage.title}
-                    referrerPolicy="no-referrer"
-                    onError={handleImageError}
-                    className={`max-h-[340px] sm:max-h-[400px] max-w-full object-contain rounded-lg transition-transform duration-200 ${
+                    title={currentImage.title}
+                    topic={currentTopic?.primaryTopic || ''}
+                    concepts={currentTopic?.concepts || []}
+                    shouldRenderLight={shouldRenderLight}
+                    className={`max-h-[340px] sm:max-h-[390px] max-w-full object-contain rounded-lg transition-transform duration-200 ${
                       shouldRenderLight ? 'contrast-105 drop-shadow-sm' : 'shadow-2xl'
                     }`}
                   />

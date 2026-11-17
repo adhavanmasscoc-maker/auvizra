@@ -73,12 +73,6 @@ export default function ImageCard({ image, isActive, onClick }) {
             loading="lazy"
           />
 
-          {image.mime === 'image/svg+xml' && (
-            <span className="absolute top-1.5 left-1.5 rounded bg-indigo-600/90 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow">
-              SVG VECTOR
-            </span>
-          )}
-
           <button
             type="button"
             onClick={(e) => {
@@ -92,16 +86,30 @@ export default function ImageCard({ image, isActive, onClick }) {
           </button>
         </div>
 
-        <div className="p-2 text-left">
+        <div className="p-2.5 text-left flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-1.5">
+            <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono ${
+              image.mime === 'image/svg+xml'
+                ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-700/40'
+                : image.source === 'Pollinations AI'
+                ? 'bg-violet-950/80 text-violet-300 border border-violet-700/40'
+                : 'bg-indigo-950/80 text-indigo-300 border border-indigo-700/40'
+            }`}>
+              {image.mime === 'image/svg+xml' ? 'SVG VECTOR' : image.source === 'Pollinations AI' ? 'AI DIAGRAM' : 'PHOTO'}
+            </span>
+            <span className="text-emerald-400/90 font-mono text-[9px] truncate max-w-[80px]">
+              {image.license || 'Open'}
+            </span>
+          </div>
           <p className="line-clamp-1 text-xs font-semibold text-slate-200 group-hover:text-indigo-300">
             {image.title}
           </p>
-          <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1">
-            <span className="truncate max-w-[110px]" title={image.author}>
+          <div className="flex items-center justify-between text-[10px] text-slate-400">
+            <span className="truncate max-w-[120px]" title={image.author}>
               {image.author || 'Visual Diagram'}
             </span>
-            <span className="text-emerald-400/90 font-mono text-[9px]">
-              {image.license}
+            <span className="text-[9px] text-slate-500 font-mono">
+              {image.source || 'Auvizra'}
             </span>
           </div>
         </div>

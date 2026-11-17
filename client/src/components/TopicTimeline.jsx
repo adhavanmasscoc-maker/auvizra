@@ -1,10 +1,12 @@
 import React from 'react';
-import { History, BookOpen, Clock, ChevronRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { History, BookOpen, Clock, ChevronRight, Sparkles, CheckCircle2, Trash2, X } from 'lucide-react';
 
 export default function TopicTimeline({
   topics = [],
   activeTopicIndex = 0,
-  onSelectTopic
+  onSelectTopic,
+  onClearTimeline,
+  onDeleteTopic
 }) {
   if (!topics || topics.length === 0) {
     return (
@@ -27,9 +29,26 @@ export default function TopicTimeline({
             Study Timeline
           </h3>
         </div>
-        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-950/80 text-indigo-300 border border-indigo-500/30">
-          {topics.length} {topics.length === 1 ? 'Milestone' : 'Milestones'}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-950/80 text-indigo-300 border border-indigo-500/30">
+            {topics.length} {topics.length === 1 ? 'Milestone' : 'Milestones'}
+          </span>
+          {onClearTimeline && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm('Clear all study milestones from the timeline?')) {
+                  onClearTimeline();
+                }
+              }}
+              className="p-1 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-slate-800/80 transition"
+              title="Clear Timeline"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
@@ -69,11 +88,26 @@ export default function TopicTimeline({
                     <Clock className="w-2.5 h-2.5" />
                     {timeStr}
                   </span>
-                  {item.imagesCount && (
-                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
-                      {item.imagesCount} visuals
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    {item.imagesCount && (
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
+                        {item.imagesCount} visuals
+                      </span>
+                    )}
+                    {onDeleteTopic && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteTopic(idx);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-0.5 text-slate-500 hover:text-rose-400 transition"
+                        title="Delete milestone"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <h4 className="text-xs font-semibold text-slate-200 group-hover:text-indigo-200 truncate">
