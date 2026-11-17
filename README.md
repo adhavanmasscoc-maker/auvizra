@@ -1,8 +1,8 @@
-# Auvizra — AI Visual Study Companion (Powered by Vizora Engine)
+# Auvizra — Universal Visual Companion
 
 > **Speak / Type → Understand → Find Visuals → Display Slideshow → Save Study Session.**
 
-**Auvizra** is a real-time, browser-based AI voice-to-visual companion built for students, researchers, developers, and lifelong learners. As you speak aloud or type any topic, Auvizra transcribes speech, extracts core concepts using a sliding context NLP window, queries high-resolution educational media from Wikimedia Commons, generates zero-latency vector schematics, and drives an adaptive, high-contrast slideshow.
+**Auvizra** is a real-time, browser-based AI voice-to-visual companion built for students, researchers, developers, and lifelong learners. As you speak aloud or type any topic, Auvizra transcribes speech, extracts core concepts using a sliding context NLP window, queries high-resolution educational media, generates on-the-fly AI schematics, and drives an adaptive, high-contrast slideshow.
 
 ---
 
@@ -18,14 +18,17 @@
 [ Sliding Context Intelligence ] (Gemini 1.5 Flash + Universal Semantic Engine)
             │
             ├── Topic & Subtopic Resolution (Universal domain support)
+            ├── Stopword & Profanity Filter (Clean badges & timeline)
             ├── Concept Badge Extraction & Auto-Recall Quiz
             └── Multi-Variant Search Expansion
             │
             ▼
-[ Dual Visual Pipeline ]
+[ 4-Tier Zero-Broken-Image Waterfall ]
             │
-            ├── 1. Vizora Vector Engine: High-fidelity SVG schematics & structural hierarchy
-            └── 2. Wikimedia Commons API: Real photography, diagrams, and historical overviews
+            ├── Tier 1: Wikipedia PageImages API + Openverse API + Wikimedia Commons
+            ├── Tier 2: Pollinations.ai Dynamic Technical AI Diagrams
+            ├── Tier 3: Auvizra Dynamic Vector Engine (SVG schematics & hierarchies)
+            └── Tier 4: Client-side Deterministic SVG Schematics (3500ms Watchdog)
             │
             ▼
 [ Relevance Gate & Auto-Proxy ]
@@ -46,81 +49,57 @@
 
 ## 🚀 Features
 
-### 1. Dual Visual Engine (Wikimedia + Dynamic Vectors)
-- **Always Dual**: Every topic returns both authentic Wikimedia Commons photography/diagrams AND dedicated Vizora SVG vector schematics.
-- **Zero Broken Visuals**: If external CDN requests are blocked or rate-limited, the system seamlessly serves guaranteed vector diagrams.
-- **Sparsity Expansion**: For rare, hyper-local, or specialized terms (e.g. `Anaipadi Village`), the engine automatically expands queries (`Tamil Nadu village landscape`) and synthesizes specialized regional & structural schematics so the deck always contains 6–8 rich slides.
+### 1. 4-Tier Visual Waterfall (Zero Broken Images)
+- **Tier 1 (Verified Knowledge Media)**: Authentic photography, diagrams, and historical overviews from Wikipedia PageImages, Openverse, and Wikimedia Commons.
+- **Tier 2 (On-Demand AI Diagrams)**: High-definition technical infographics generated dynamically via Pollinations.ai.
+- **Tier 3 (Auvizra Dynamic Vector Schematics)**: High-contrast node-link architectures, component hierarchies, and spatial context maps rendered with responsive SVG viewports.
+- **Tier 4 (Fail-Safe Client Schematics)**: 3500ms watchdog timer automatically synthesizes local vector schematics if network connections stall.
 
-### 2. Auto-Contrast Studio Canvas
-- Many technical diagrams from Wikimedia Commons use transparent backgrounds with black ink. Over dark themes, these lines become invisible.
-- Auvizra features an **Auto-Contrast Studio Card** that automatically mounts transparent diagrams onto a crisp white studio card (`⚪ Light`), ensuring razor-sharp contrast for every circuit, arrow, and label.
+### 2. Universal Topic Intelligence & Clean Badges
+- **Universal Domain Support**: Seamlessly classifies queries across computer science, electronics, medicine, geography, nature, pop culture, and daily life.
+- **Grammatical Integrity**: Eliminates mid-sentence subtitle cutoffs (e.g. trailing "Using A").
+- **Content & Profanity Guardrails**: Automatic filtering keeps study timelines and concept pills clean.
 
-### 3. Persistent User-Controlled Microphone
-- Web Speech API runs in continuous mode (`MIC ON`), persisting across slides and queries until you click `MIC OFF`.
-- Concurrently supports instant text typing via the quick visualize bar.
-
-### 4. Dual Operating Modes
-- **🎓 Study Mode**: Focuses on architecture diagrams, schematics, recall quizzes, and concept notes.
-- **🌐 All Topics**: Universal visual companion for vehicles, animals, landmarks, astronomy, machinery, and daily life.
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 18, Vite 5, Tailwind CSS, Framer Motion, Lucide Icons
-- **Backend**: Node.js, Express, Multer, `@google/generative-ai`
-- **Speech**: Continuous Web Speech API + Web Audio API AnalyserNode + OpenAI Whisper endpoint
-- **Intelligence**: Google Gemini 1.5 Flash + Universal Offline Semantic NLP Engine
-- **Visuals**: Wikimedia Commons API + Custom Vizora Dynamic SVG Vector Engine
-- **Deployment**: Vercel Serverless Functions (`api/index.js`) + Static Edge CDN
+### 3. Studio Canvas Modes
+- **⚪ Light**: Crisp white studio backdrop for black-ink diagrams and transparent SVGs.
+- **Auto**: Automatically provides white backing for transparent diagrams so black text is always readable.
+- **⚫ Dark**: High-contrast OLED dark theme for glowing vector schematics.
+- **📐 Grid**: Technical blueprint grid for engineering diagrams.
 
 ---
 
-## 📦 Deployment on Vercel
+## 🌐 Live Production Deployments (Vercel)
 
-Auvizra is pre-configured for fullstack single-click deployment on [Vercel](https://vercel.com/):
+- **Primary**: [https://auvizra.vercel.app](https://auvizra.vercel.app)
+- **AI Domain**: [https://auvizra-ai.vercel.app](https://auvizra-ai.vercel.app)
+- **Studio Domain**: [https://auvizra-studio.vercel.app](https://auvizra-studio.vercel.app)
+- **AKNEX Ecosystem**: [https://aknex-auvizra.vercel.app](https://aknex-auvizra.vercel.app)
+- **Vozqura**: [https://vozqura.vercel.app](https://vozqura.vercel.app)
+- **Kynviz**: [https://kynviz.vercel.app](https://kynviz.vercel.app)
+- **Zynqviz**: [https://zynqviz.vercel.app](https://zynqviz.vercel.app)
+
+---
+
+## 🛠️ Development & Quickstart
 
 ```bash
-# 1. Install dependencies
+# Clone the repository
+git clone https://github.com/adhavanmasscoc-maker/auvizra.git
+cd auvizra
+
+# Install dependencies
 npm install
+cd client && npm install && cd ..
 
-# 2. Build frontend
-npm run build
+# Start backend (port 5000)
+node server/server.js
 
-# 3. Deploy to production
-vercel --prod
+# Start frontend dev server (port 5173)
+cd client && npm run dev
 ```
-
-### Subdomain Recommendations (.vercel.app)
-Attach any of these high-trend subdomains in **Vercel Project Settings → Domains**:
-
-1. `auvizra.vercel.app`
-2. `auvizra-ai.vercel.app`
-3. `auvizra-studio.vercel.app`
-4. `aknex-auvizra.vercel.app`
-5. `vozqura.vercel.app`
-6. `kynviz.vercel.app`
-7. `zynqviz.vercel.app`
-8. `voxdeck.vercel.app`
-9. `echodeck.vercel.app`
-10. `voxlens.vercel.app`
-
----
-
-## 💻 Local Development
-
-```bash
-# Run backend server (Port 5000)
-npm run dev:server
-
-# Run client dev server (Port 5173)
-npm run dev:client
-```
-
-Open `http://localhost:5173` to explore in real-time.
 
 ---
 
 ## 📄 License
 
-MIT License. Educational visuals and Wikimedia Commons media subject to respective Creative Commons / Public Domain licenses.
+MIT License — Created by **Aadhavan K, B.E., M.Tech., Ph.D.**

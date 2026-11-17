@@ -11,7 +11,7 @@ export default function SessionHistory({
   if (!isOpen) return null;
 
   const exportAsMarkdown = (session) => {
-    let md = `# Vizora Study Session: ${session.title || 'Untitled Session'}\n`;
+    let md = `# Auvizra Study Session: ${session.title || 'Untitled Session'}\n`;
     md += `*Date: ${new Date(session.timestamp).toLocaleString()}*\n\n`;
     md += `## Topics Covered\n\n`;
 
@@ -36,7 +36,7 @@ export default function SessionHistory({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `vizora-study-notes-${Date.now()}.md`;
+    a.download = `auvizra-study-notes-${Date.now()}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };

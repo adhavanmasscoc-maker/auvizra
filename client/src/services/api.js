@@ -59,12 +59,25 @@ export async function checkBackendHealth() {
 }
 
 // Session Persistence
+const SESSIONS_STORAGE_KEY = 'auvizra_saved_sessions';
+const LEGACY_STORAGE_KEY = 'vizora_saved_sessions';
+
+function getStoredLocalSessions() {
+  try {
+    const modern = localStorage.getItem(SESSIONS_STORAGE_KEY);
+    if (modern) return JSON.parse(modern);
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy) return JSON.parse(legacy);
+  } catch (e) {}
+  return [];
+}
+
 export async function saveStudySession(session) {
   try {
-    const existing = JSON.parse(localStorage.getItem('vizora_saved_sessions') || '[]');
+    const existing = getStoredLocalSessions();
     const filtered = existing.filter(s => s.id !== session.id);
     filtered.unshift(session);
-    localStorage.setItem('vizora_saved_sessions', JSON.stringify(filtered.slice(0, 30)));
+    localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(filtered.slice(0, 30)));
   } catch (e) {
     console.warn('LocalStorage save failed:', e);
   }
@@ -86,12 +99,7 @@ export async function saveStudySession(session) {
 }
 
 export async function loadSavedSessions() {
-  let localSessions = [];
-  try {
-    localSessions = JSON.parse(localStorage.getItem('vizora_saved_sessions') || '[]');
-  } catch (e) {
-    localSessions = [];
-  }
+  let localSessions = getStoredLocalSessions();
 
   try {
     const res = await fetch(`${API_BASE}/sessions`);
@@ -110,9 +118,9 @@ export async function loadSavedSessions() {
 
 export async function deleteSavedSession(id) {
   try {
-    const existing = JSON.parse(localStorage.getItem('vizora_saved_sessions') || '[]');
+    const existing = getStoredLocalSessions();
     const updated = existing.filter(s => s.id !== id);
-    localStorage.setItem('vizora_saved_sessions', JSON.stringify(updated));
+    localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {
     console.error(e);
   }

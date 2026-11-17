@@ -30,7 +30,7 @@ import {
 export default function StudySession() {
   const [settings, setSettings] = useState(() => {
     try {
-      const stored = localStorage.getItem('vizora_user_settings');
+      const stored = localStorage.getItem('auvizra_user_settings') || localStorage.getItem('vizora_user_settings');
       return stored ? JSON.parse(stored) : { slideInterval: 8, chunkDuration: 10, geminiKey: '' };
     } catch (e) {
       return { slideInterval: 8, chunkDuration: 10, geminiKey: '' };
@@ -96,19 +96,27 @@ export default function StudySession() {
   const handleChunkReady = useCallback(async (chunkText) => {
     if (!chunkText || !chunkText.trim()) return;
 
+    let cleanText = chunkText.trim();
+    // Guardrail against accidental profanity or test inputs
+    const profaneRegex = /\b(sex|porn|xxx|nude|penis|vagina|bitch|fuck|shit|ass|dick|pussy|cock)\b/gi;
+    if (profaneRegex.test(cleanText)) {
+      cleanText = cleanText.replace(profaneRegex, '').trim();
+      if (!cleanText) cleanText = 'General Scientific Concept';
+    }
+
     setIsProcessing(true);
 
     try {
       const recentHistory = transcriptChunks.slice(-5);
       const analysis = await analyzeSpeechTopic({
-        chunk: chunkText.trim(),
+        chunk: cleanText,
         history: recentHistory,
         currentTopic,
         apiKey: settings.geminiKey,
         mode: activeMode
       });
 
-      setTranscriptChunks(prev => [...prev, chunkText.trim()]);
+      setTranscriptChunks(prev => [...prev, cleanText]);
 
       // Multi-source image retrieval
       const searchQueries = analysis.searchQueries || [`${analysis.primaryTopic}`];
@@ -123,7 +131,7 @@ export default function StudySession() {
             url: generateClientFallbackSVG(analysis.primaryTopic, 'Architecture Overview'),
             thumbUrl: generateClientFallbackSVG(analysis.primaryTopic, 'Architecture Overview'),
             mime: 'image/svg+xml',
-            source: 'Vizora Engine',
+            source: 'Auvizra Engine',
             license: 'Public Domain',
             description: `Visual schematic and architecture for ${analysis.primaryTopic}.`
           },
@@ -133,7 +141,7 @@ export default function StudySession() {
             url: generateClientFallbackSVG(`${analysis.primaryTopic} Components`, 'Structure & Specs'),
             thumbUrl: generateClientFallbackSVG(`${analysis.primaryTopic} Components`, 'Structure & Specs'),
             mime: 'image/svg+xml',
-            source: 'Vizora Engine',
+            source: 'Auvizra Engine',
             license: 'Public Domain',
             description: `Component structure and specifications for ${analysis.primaryTopic}.`
           }
@@ -145,11 +153,12 @@ export default function StudySession() {
       goToSlide(0); // Jump to first slide of new topic immediately
 
       // Update current active topic milestone
+      const cleanConcepts = (analysis.concepts || []).filter(c => !profaneRegex.test(c));
       const milestone = {
         id: `topic_${Date.now()}`,
         primaryTopic: analysis.primaryTopic,
         subtopic: analysis.subtopic,
-        concepts: analysis.concepts || [],
+        concepts: cleanConcepts.length > 0 ? cleanConcepts : [analysis.primaryTopic],
         caption: analysis.caption || '',
         quizQuestion: analysis.quizQuestion || null,
         timestamp: Date.now(),
@@ -169,7 +178,7 @@ export default function StudySession() {
     } catch (err) {
       console.error('Pipeline processing error:', err);
       // Fallback: guaranteed instant switch even on network error
-      const fallbackName = chunkText.trim();
+      const fallbackName = cleanText;
       const fallbackSlides = [
         {
           id: `client-err-fb-${Date.now()}-1`,
@@ -177,7 +186,7 @@ export default function StudySession() {
           url: generateClientFallbackSVG(fallbackName, 'Visual Overview'),
           thumbUrl: generateClientFallbackSVG(fallbackName, 'Visual Overview'),
           mime: 'image/svg+xml',
-          source: 'Vizora Engine',
+          source: 'Auvizra Engine',
           license: 'Public Domain',
           description: `Visual overview for ${fallbackName}.`
         }
@@ -222,7 +231,7 @@ export default function StudySession() {
   const handleSaveCurrentSession = async () => {
     const sessionData = {
       id: sessionId,
-      title: currentTopic?.primaryTopic || 'Vizora Visual Session',
+      title: currentTopic?.primaryTopic || 'Auvizra Visual Session',
       timestamp: sessionStartTime,
       durationSeconds: elapsedSeconds,
       topics: topicHistory,
@@ -259,6 +268,33 @@ export default function StudySession() {
     }
   };
 
+  // Clear timeline completely
+  const handleClearTimeline = () => {
+    setTopicHistory([]);
+    setTranscriptChunks([]);
+    setActiveTopicIndex(0);
+  };
+
+  // Delete individual milestone
+  const handleDeleteTimelineTopic = (indexToDelete) => {
+    setTopicHistory(prev => {
+      const updated = prev.filter((_, idx) => idx !== indexToDelete);
+      if (updated.length === 0) {
+        setActiveTopicIndex(0);
+        setCurrentTopic(null);
+      } else if (activeTopicIndex >= updated.length) {
+        const nextIdx = updated.length - 1;
+        setActiveTopicIndex(nextIdx);
+        setCurrentTopic(updated[nextIdx]);
+        if (updated[nextIdx].images) setAllImages(updated[nextIdx].images);
+      } else if (indexToDelete === activeTopicIndex) {
+        setCurrentTopic(updated[activeTopicIndex]);
+        if (updated[activeTopicIndex].images) setAllImages(updated[activeTopicIndex].images);
+      }
+      return updated;
+    });
+  };
+
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -286,11 +322,11 @@ export default function StudySession() {
                     AUVIZRA
                   </h1>
                   <span className="text-[9px] text-cyan-400/90 font-mono font-medium px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/40 hidden xs:inline-block">
-                    VIZORA ENGINE
+                    AUVIZRA CORE
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 hidden sm:block">
-                  AI Voice-to-Visual Study Companion
+                  Universal Visual Companion
                 </p>
               </div>
             </div>
@@ -422,6 +458,8 @@ export default function StudySession() {
                   topics={topicHistory}
                   activeTopicIndex={activeTopicIndex}
                   onSelectTopic={handleSelectTopicFromTimeline}
+                  onClearTimeline={handleClearTimeline}
+                  onDeleteTopic={handleDeleteTimelineTopic}
                 />
               </div>
 
